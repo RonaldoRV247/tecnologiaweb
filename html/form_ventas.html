@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <{include file="head.html" title=head}>
+    <title>Ventas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+    <style type="text/css">
+        table{border-spacing:0px; border-collapse:collapse; border:0.1px solid #000; font-size:12px;}
+        thead{background-color:#dce6f1;}            
+        th, td {padding: 0px; border:0.1px solid #000; vertical-align: middle}
+        table th{vertical-align: middle}
+        #data tr:nth-child(odd) td{background-color:#c5daeb}
+        #data tr:nth-child(even) td{background-color:#e3fbf0}
+    </style>
+    <script type="text/javascript">
+        function calcularIGV() {
+            var subtotal = parseFloat(document.getElementById("subtotal").value) || 0;
+            var igv = subtotal * 0.18;
+            document.getElementById("igv").value = igv.toFixed(2);
+            document.getElementById("total").value = (subtotal + igv).toFixed(2);
+        }
+    </script>
+
+</head>
+<body style="font-size: 20px !important;">
+    <{include file="menu_top.html" title=menu_top}>
+    <form id="frmClt" name="frmClt" class="container" method="post" action="<{$smarty.server.REQUEST_URI}>" onsubmit="return validarFrm()">
+        <fieldset class="border p-2">
+            <legend class="w-auto" style="color: blue">Registro de Ventas</legend>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" value="<{if isset($v.fecha)}><{$v.fecha}><{/if}>" name="fecha" id="fecha" class="form-control" required autofocus/>
+                    </div>
+                    <div class="form-group">
+                        <label for="idcliente">Clientes</label>
+                        <div class="input-group">
+                            <select name="idcliente" id="idcliente" class="form-control" required>
+                                <{html_options options=$clientes selected=$v.idcliente}>
+                            </select>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-dark" type="button" onclick="window.location.href='clientes.php'">
+                                    <span>➕</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="serie">Serie</label>
+                        <input type="text" value="<{if isset($v.serie)}><{$v.serie}><{/if}>" name="serie" id="serie" class="form-control" placeholder="Serie" maxlength="11" required onkeypress="return Text(event)"/>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="numero">Número</label>
+                        <input type="number" value="<{if isset($v.numero)}><{$v.numero}><{else}><{$numero_inicial}><{/if}>" name="numero" id="numero" class="form-control" placeholder="Número" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label for="subtotal">Subtotal</label>
+                        <input type="number" step=".01" value="<{if isset($v.subtotal)}><{$v.subtotal}><{/if}>" name="subtotal" id="subtotal" class="form-control" placeholder="Subtotal" oninput="calcularIGV()"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="igv">IGV</label>
+                        <input type="number" step=".01" value="<{if isset($v.igv)}><{$v.igv}><{else}><{0}><{/if}>" name="igv" id="igv" class="form-control" placeholder="IGV" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label for="total">Total</label>
+                        <input type="number" step=".01" value="<{if isset($v.total)}><{$v.total}><{/if}>" name="total" id="total" class="form-control" placeholder="Total" readonly/>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <input type="submit" id="bnguardar" name="mod" class="btn btn-primary" value="<{if isset($smarty.request.mod) eq editar}>Modificar<{else}>Insertar<{/if}>"/>
+                <input type="reset" value="Cancelar" class="btn btn-secondary" onclick="window.location.href='<{$smarty.server.SCRIPT_NAME}>';"/>
+            </div>
+        </fieldset>
+    </form>
+    
+    <br/>
+    <div class="container">
+        <table id="data" class="min-w-full bg-white border border-gray-300" style="font-size: 15px;">
+            <input type="search" id="bsc" placeholder="Buscar" title="Buscar" autofocus onkeyup="getVentas()" class="mb-4 p-2 border border-gray-300 rounded-md w-full"/>
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="py-2 px-4 border-b border-gray-300 text-left">Clientes</th>
+                    <th class="py-2 px-4 border-b border-gray-300 text-left">Fecha</th>
+                    <th class="py-2 px-4 border-b border-gray-300 text-left">Serie</th>
+                    <th class="py-2 px-4 border-b border-gray-300 text-left">Número</th>
+                    <th class="py-2 px-4 border-b border-gray-300 text-left">Subtotal</th>
+                    <th class="py-2 px-4 border-b border-gray-300 text-left">IGV</th>
+                    <th class="py-2 px-4 border-b border-gray-300 text-left">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <script type="text/javascript" src="js/ventas.js<{$vars.version}>"></script>
+    <script type="text/javascript">
+        getVentas();
+    </script>
+</body>
+</html>
