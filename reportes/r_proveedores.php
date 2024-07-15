@@ -1,9 +1,84 @@
 <?php
-require('//fpdf186/fpdf');
+require_once '../vendor/autoload.php'; // Asegúrate de que la ruta sea correcta
 
-$pdf = new FPDF();
-$pdf->AddPage();
-$pdf->SetFont('Arial','B',16);
-$pdf->Cell(40,10,'¡Hola, Mundo!');
-$pdf->Output();
+// Incluir las configuraciones necesarias
+require_once('../classes/config.php'); // Ajusta la ruta según sea necesario
+// Generar el gráfico
+include '../graficos/chart.php'; // Ajusta la ruta según la estructura de tu proyecto
+
+// Conectarse a la base de datos
+$dsn = "{$CONFIG['dbtype']}:host={$CONFIG['dbhost']};port={$CONFIG['dbport']};dbname={$CONFIG['dbname']}";
+$options = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+try {
+    $conn = new PDO($dsn, $CONFIG['dbuser'], $CONFIG['dbpass'], $options);
+} catch (PDOException $e) {
+    die("No se pudo conectar a la base de datos: " . $e->getMessage());
+}
+
+// Obtener datos de los clientes
+$sql = "SELECT idcliente, razonsocial, email, direccion, celular FROM clientes";
+$result = $conn->query($sql);
+
+// Crear contenido HTML para el PDF
+$html = '
+<html>
+<head>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reporte de Clientes</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Razón Social</th>
+                <th>Email</th>
+                <th>Dirección</th>
+                <th>Celular</th>
+            </tr>
+        </thead>
+        <tbody>';
+
+while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+    $html .= '
+            <tr>
+                <td>' . htmlspecialchars($row['idcliente']) . '</td>
+                <td>' . htmlspecialchars($row['razonsocial']) . '</td>
+                <td>' . htmlspecialchars($row['email']) . '</td>
+                <td>' . htmlspecialchars($row['direccion']) . '</td>
+                <td>' . htmlspecialchars($row['celular']) . '</td>
+            </tr>';
+}
+
+$html .= '
+        </tbody>
+    </table>
+    <h2>Gráfico de Clientes</h2>
+    <img src="../images/chart.png" width="100%" /> <!-- Asegúrate de que la ruta sea correcta -->
+</body>
+</html>';
+
+// Crear instancia de mPDF
+$mpdf = new \Mpdf\Mpdf([
+    'mode' => 'utf-8',
+    'format' => 'A4'
+]);
+
+// Escribir el contenido HTML en el PDF
+$mpdf->WriteHTML($html);
+
+// Salida del PDF
+$mpdf->Output();
 ?>
