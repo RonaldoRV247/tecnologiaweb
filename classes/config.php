@@ -6,4 +6,4 @@ $CONFIG['dbname'] = 'ventas';
 $CONFIG['dbhost'] = 'localhost';
 $CONFIG['dbport'] = '3306';
 
-$CONFIG['path'] = 'D:\xampp\htdocs\tecnologiaweb/';
+$CONFIG['path'] = 'C:\xampp\htdocs\tecnologiaweb/';
