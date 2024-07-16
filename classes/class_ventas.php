@@ -3,46 +3,50 @@ require_once ("cSetup.php");
 class ventas extends Setup{
     var $error;
     var $mod;
-    var $query = array( 0 => 'select v.*,cl.razonsocial from ventas v inner join clientes cl where v.idcliente=cl.idcliente 
-                            and if(length(?), v.numero like ?,1) order by v.idventa asc limit 30',
+    var $query = array( 0 => 'select c.*,v.razonsocial from ventas c inner join clientes v where c.idcliente=v.idcliente 
+                            and if(length(?), v.razonsocial like ?,1) order by c.idventa asc limit 30',
                         1 => 'select * from ventas where idventa=?',
                         2 => 'update ventas set fecha=?, serie=?, numero=?, subtotal=?, igv=?,total=?, idcliente=? where idventa=?',
                         3 => 'insert into ventas (fecha, serie, numero, subtotal, igv,total, idcliente) values(?, ?, ?, ?,?, ?, ?)',
-                        4 => 'delete from ventas where idventa=?'
-);
+                        4 => 'delete from ventas where idventa=?',
+                        5 => 'select MAX(numero) as max_numero FROM ventas',
+                        6 => 'select dv.*,p.producto from detalleventa dv inner join productos p where p.idproducto=dv.idproducto and idventa=?',
+                        7 => 'insert into detalleventa (precio,cantidad,importe,idproducto,idventa) values (?,?,?,?,?)',
+                        8 => 'select idventa from ventas order by idventa desc limit 1'
+
+    );
     function __construct() {
         parent::__construct();
         if (isset($_REQUEST['mod'])) {
             $this->mod = $_REQUEST['mod'];
         }
-        
     }
-    
+
     function setNumeroInicial() {
-         $p = $this->db->prepare("SELECT ultimo_numero FROM config WHERE id = 1");
-         $p->execute();
-         $result = $p->fetch();
-         $numero = $result['ultimo_numero'] + 1;
- 
-         // Asignar el nuevo número al template
-         $this->smarty->assign('numero_inicial', $numero);
+        $p = $this->db->prepare($this->query[5]);
+        $p->execute();
+        $result = $p->fetch();
+        $numero = $result['max_numero'] ? $result['max_numero'] + 1 : 1000;
+        $this->smarty->assign('numero_inicial', $numero);
     }
 
     function form(){
         $this->getTipodocumento();
-        $this->getClientes(); // Añadir esta línea
-        if ($this->mod == 'editar')
+        $this->getProveedores(); // Añadir esta línea
+        $this->getProductos(); 
+        if ($this->mod == 'editar'){
             $this->cargarDatos();
-        else
+            // $this->getDetalleVta();
+        }else
             $this->setNumeroInicial(); // Llamamos a la nueva función
         $this->smarty->display('form_ventas.html');
     }
     
-    function getClientes() {
+    function getProveedores() {
         $sql = "SELECT idcliente, razonsocial FROM clientes";
         $p = $this->db->prepare($sql);
         $p->execute();
-        $clientes = array();
+        $proveedores = array();
         while($row = $p->fetch()) {
             $clientes[$row['idcliente']] = $row['razonsocial'];
         }
@@ -56,12 +60,31 @@ class ventas extends Setup{
             $ventas[]=$rw;
         echo json_encode($ventas);
     }
+
+    function getProductos() {
+        $sql = "SELECT idproducto,producto FROM productos";
+        $p = $this->db->prepare($sql);
+        $p->execute();
+        // $productos = array();
+        while($row = $p->fetch()) {
+            $productos[$row['idproducto']] = $row['producto'];
+        }
+        $this->smarty->assign('productos', $productos);
+    }
+    
     function cargarDatos(){
         $p = $this->db->prepare($this->query[1]);
         $p->execute(array($_REQUEST['idventa']));
-        $v = $p->fetch();
-        $this->smarty->assign('v', $v);
+        $vt = $p->fetch();
+        $this->smarty->assign('vt', $vt);
+        //para el detalle de venta 
+        $p2 = $this->db->prepare($this->query[6]);
+        $p2->execute(array($_REQUEST['idventa']));
+        while($rw=$p2->fetch())
+            $det_vt[]=$rw;
+        $this->smarty->assign('det_vt', $det_vt);
     }
+
     function guardar(){
         try {
 //            $this->db->beginTransaction();
@@ -71,10 +94,12 @@ class ventas extends Setup{
             }else{
                 $p = $this->db->prepare($this->query[3]);
                 $p->execute(array($_REQUEST['fecha'],$_REQUEST['serie'],$_REQUEST['numero'],$_REQUEST['subtotal'],$_REQUEST['igv'],$_REQUEST['total'],$_REQUEST['idcliente']));
-                // Actualizar el último número generado en la tabla de configuración
-                $numero = $_REQUEST['numero'];
-                $p = $this->db->prepare("UPDATE config SET ultimo_numero = :numero WHERE id = 1");
-                $p->execute(['numero' => $numero]);
+                $sql = "select idventa from ventas order by idventa desc limit 1";
+                $ultima_venta = $this->db->prepare($sql);
+                $ultima_venta->execute();
+                $idventa = $ultima_venta;
+                
+
             }
             header('location: ventas.php');
 //            $this->db->commit();

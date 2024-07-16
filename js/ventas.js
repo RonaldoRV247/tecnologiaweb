@@ -5,10 +5,10 @@ function getVentas(){
         success: function (result){
             $('#data tbody').empty();
             $.each(result, function(id, c){
-                var html = '<tr><td>'+c.razonsocial+'</td>';
+                var html = '<tr><td>'+c.idventa+'</td>';
+                html += '<td>'+c.razonsocial+'</td>';
                 html += '<td>'+c.fecha+'</td>';
-                html += '<td>'+c.serie+'</td>';
-                html += '<td>'+c.numero+'</td>';
+                html += '<td>'+c.serie+ ' - '+ c.numero+'</td>';
                 html += '<td>'+c.subtotal+'</td>';
                 html += '<td>'+c.igv+'</td>';
                 html += '<td>'+c.total+'</td>';
@@ -19,11 +19,12 @@ function getVentas(){
         },
     });
 }
+
 function Editar(idventa) {
     window.location.href='ventas.php?mod=editar&idventa='+idventa;
 }
 function Eliminar(idventa) {
-    if (!confirm('Estas seguro de eliminar?')) {
+    if (!confirm('Estas seguro de eliminar? O me estás loqueando?')) {
         return false;
     }
     $.ajax({type: "POST", url: 'ventas.php?&mod=eliminar&idventa='+idventa,
