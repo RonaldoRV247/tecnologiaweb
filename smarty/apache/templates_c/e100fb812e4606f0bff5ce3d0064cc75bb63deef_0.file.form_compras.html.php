@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 4.5.3, created on 2024-07-04 18:56:11
+/* Smarty version 4.5.3, created on 2024-07-15 22:26:23
   from 'D:\xampp\htdocs\tecnologiaweb\html\form_compras.html' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '4.5.3',
-  'unifunc' => 'content_6687369b22b168_37125239',
+  'unifunc' => 'content_6695e85f5066a3_34248284',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'e100fb812e4606f0bff5ce3d0064cc75bb63deef' => 
     array (
       0 => 'D:\\xampp\\htdocs\\tecnologiaweb\\html\\form_compras.html',
-      1 => 1720137180,
+      1 => 1720138626,
       2 => 'file',
     ),
   ),
@@ -22,7 +22,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
     'file:menu_top.html' => 1,
   ),
 ),false)) {
-function content_6687369b22b168_37125239 (Smarty_Internal_Template $_smarty_tpl) {
+function content_6695e85f5066a3_34248284 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_checkPlugins(array(0=>array('file'=>'D:\\xampp\\htdocs\\tecnologiaweb\\smarty\\libs\\plugins\\function.html_options.php','function'=>'smarty_function_html_options',),));
 ?>
 <!DOCTYPE html>
