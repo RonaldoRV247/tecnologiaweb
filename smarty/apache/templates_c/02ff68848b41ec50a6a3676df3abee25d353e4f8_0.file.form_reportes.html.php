@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 4.5.3, created on 2024-07-16 22:28:04
+/* Smarty version 4.5.3, created on 2024-07-16 23:16:47
   from 'D:\xampp\htdocs\tecnologiaweb\html\form_reportes.html' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '4.5.3',
-  'unifunc' => 'content_66973a440e0a58_22629324',
+  'unifunc' => 'content_669745af2ffc67_26879145',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '02ff68848b41ec50a6a3676df3abee25d353e4f8' => 
     array (
       0 => 'D:\\xampp\\htdocs\\tecnologiaweb\\html\\form_reportes.html',
-      1 => 1721186881,
+      1 => 1721189806,
       2 => 'file',
     ),
   ),
@@ -22,7 +22,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
     'file:menu_top.html' => 1,
   ),
 ),false)) {
-function content_66973a440e0a58_22629324 (Smarty_Internal_Template $_smarty_tpl) {
+function content_669745af2ffc67_26879145 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_checkPlugins(array(0=>array('file'=>'D:\\xampp\\htdocs\\tecnologiaweb\\smarty\\libs\\plugins\\function.html_options.php','function'=>'smarty_function_html_options',),));
 ?>
 <!DOCTYPE html>
@@ -39,6 +39,7 @@ $_smarty_tpl->_checkPlugins(array(0=>array('file'=>'D:\\xampp\\htdocs\\tecnologi
 <body class="bg-gray-100">
     <?php $_smarty_tpl->_subTemplateRender("file:menu_top.html", $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array('title'=>'menu_top'), 0, false);
 ?>
+    <input type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="location.href='ventas.php';" value="Ir a ventas" />
     <div class="container mx-auto p-4">
         <form id="frmRptClientes" name="frmRptClientes" method="post" action="<?php echo $_smarty_tpl->tpl_vars['report_url']->value;?>
 " class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" target="_blank">
