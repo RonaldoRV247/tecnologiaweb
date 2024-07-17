@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <{include file="head.html" title=head}>
+    <title>Reportes</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Incluir Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <{include file="menu_top.html" title=menu_top}>
+    <div class="container mx-auto p-4">
+        <form id="frmRptClientes" name="frmRptClientes" method="post" action="<{$report_url}>" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" target="_blank">
+            <fieldset>
+                <legend class="text-blue-500 text-xl font-bold mb-4">Generar Reporte de Clientes</legend>
+                
+                <div class="text-center">
+                    <input type="submit" id="bngenerarClientes" name="mod" value="Generar Reporte" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" formtarget="_blank"/>
+                </div>
+            </fieldset>
+        </form>
+        
+        <form id="frmRptProductos" name="frmRptProductos" method="post" action="<{$report_productos}>" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" target="_blank">
+            <fieldset>
+                <legend class="text-blue-500 text-xl font-bold mb-4">Generar Reporte de Productos Vendidos por Año</legend>
+                
+                <div class="mb-4">
+                    <label for="producto" class="block text-gray-700 text-sm font-bold mb-2">Producto</label>
+                    <select name="producto" id="producto" class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                        <{html_options options=$productos}>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="anio" class="block text-gray-700 text-sm font-bold mb-2">Año</label>
+                    <select name="anio" id="anio" class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                        <{html_options options=$anios}>
+                    </select>
+                </div>
+                
+                <div class="text-center">
+                    <input type="submit" id="bngenerarProductos" name="mod" value="Generar Reporte" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" formtarget="_blank"/>
+                </div>
+            </fieldset>
+        </form>
+        
+        <form id="frmRptCompras" name="frmRptCompras" method="post" action="<{$report_compras}>" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" target="_blank">
+            <fieldset>
+                <legend class="text-blue-500 text-xl font-bold mb-4">Generar Reporte de Compras a Proveedores</legend>
+                
+                <div class="mb-4">
+                    <label for="proveedor" class="block text-gray-700 text-sm font-bold mb-2">Proveedor</label>
+                    <select name="proveedor" id="proveedor" class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                        <{html_options options=$proveedores}>
+                    </select>
+                </div>
+                
+                <div class="text-center">
+                    <input type="submit" id="bngenerarCompras" name="mod" value="Generar Reporte" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" formtarget="_blank"/>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <script type="text/javascript" src="js/reportes.js<{$vars.version}>"></script>
+</body>
+</html>
