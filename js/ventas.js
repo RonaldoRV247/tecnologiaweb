@@ -24,7 +24,7 @@ function Editar(idventa) {
     window.location.href='ventas.php?mod=editar&idventa='+idventa;
 }
 function Eliminar(idventa) {
-    if (!confirm('Estas seguro de eliminar? O me estás loqueando?')) {
+    if (!confirm('Estas seguro de eliminar?')) {
         return false;
     }
     $.ajax({type: "POST", url: 'ventas.php?&mod=eliminar&idventa='+idventa,

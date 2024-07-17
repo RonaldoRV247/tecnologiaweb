@@ -12,7 +12,9 @@ class ventas extends Setup{
                         5 => 'select MAX(numero) as max_numero FROM ventas',
                         6 => 'select dv.*,p.producto from detalleventa dv inner join productos p where p.idproducto=dv.idproducto and idventa=?',
                         7 => 'insert into detalleventa (precio,cantidad,importe,idproducto,idventa) values (?,?,?,?,?)',
-                        8 => 'select idventa from ventas order by idventa desc limit 1'
+                        8 => 'select idventa from ventas order by idventa desc limit 1',
+                        9 => 'delete from detalleventa where iddetalleventa=?',
+                        10 => 'update detalleventa set precio=?,cantidad=?,importe=?,idproducto=?,idventa=? where iddetalleventa=?',
 
     );
     function __construct() {
@@ -89,18 +91,31 @@ class ventas extends Setup{
         try {
 //            $this->db->beginTransaction();
             if(isset($_REQUEST['idventa'])){
+                $idventa = $_REQUEST['idventa'];
                 $p = $this->db->prepare($this->query[2]);
                 $p->execute(array($_REQUEST['fecha'],$_REQUEST['serie'],$_REQUEST['numero'],$_REQUEST['subtotal'],$_REQUEST['igv'],$_REQUEST['total'],$_REQUEST['idcliente'],$_REQUEST['idventa']));
+                // $act = $this->db->prepare($this->query[10]);
+                if(isset($_REQUEST['detalle'])){
+                    $detalle = json_decode($_REQUEST['detalle'], true);
+                    foreach ($detalle as $item) {
+                        $pd = $this->db->prepare($this->query[7]);
+                        $pd->execute(array($item['precio'], $item['cantidad'], $item['importe'], $item['idproducto'], $idventa));
+                    }
+                }
+
             }else{
                 $p = $this->db->prepare($this->query[3]);
                 $p->execute(array($_REQUEST['fecha'],$_REQUEST['serie'],$_REQUEST['numero'],$_REQUEST['subtotal'],$_REQUEST['igv'],$_REQUEST['total'],$_REQUEST['idcliente']));
-                $sql = "select idventa from ventas order by idventa desc limit 1";
-                $ultima_venta = $this->db->prepare($sql);
-                $ultima_venta->execute();
-                $idventa = $ultima_venta;
-                
-
+                 // Obtener el último ID de venta insertado
+                $idventa = $this->db->lastInsertId();
+                // Guardar detalle de venta
+                $detalle = json_decode($_REQUEST['detalle'], true);
+                foreach ($detalle as $item) {
+                    $pd = $this->db->prepare($this->query[7]);
+                    $pd->execute(array($item['precio'], $item['cantidad'], $item['importe'], $item['idproducto'], $idventa));
+                }
             }
+
             header('location: ventas.php');
 //            $this->db->commit();
         } catch (Exception $exc) {
@@ -115,6 +130,17 @@ class ventas extends Setup{
             //code...
             $p = $this->db->prepare($this->query[4]);
             $p->execute(array($_REQUEST['idventa']));
+        } catch (Exception $exc) {
+            $this->error=1;
+        }
+        echo $this->error ? 'Error ['.$p->errorInfo()[2] .']' : 'Se ha eliminado corectamente.';
+    }
+    function eliminardetalle(){
+        
+        try {
+            //code...
+            $p = $this->db->prepare($this->query[9]);
+            $p->execute(array($_REQUEST['iddetalleventa']));
         } catch (Exception $exc) {
             $this->error=1;
         }

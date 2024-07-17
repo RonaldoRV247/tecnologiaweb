@@ -7,6 +7,7 @@ switch($obj->mod){
     case 'Modificar': $obj->guardar();break;
     case 'Insertar': $obj->guardar();break;
     case 'eliminar': $obj->eliminar();break;
+    case 'eliminardetalle': $obj->eliminardetalle();break;
     default: $obj->form(); break;
 }
 ?>
